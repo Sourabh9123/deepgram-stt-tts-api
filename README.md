@@ -38,6 +38,14 @@ python examples/generate_speech.py "Hello from Deepgram"
 curl -X POST http://localhost:8000/stt \
   -F "file=@sample.wav"
 
+curl -X POST "http://localhost:8000/stt/binary?model=nova-3" \
+  -H "Content-Type: audio/wav" \
+  --data-binary @sample.wav
+
+curl -X POST http://localhost:8000/stt/base64 \
+  -H "Content-Type: application/json" \
+  -d '{"audio_base64":"<base64-audio>","content_type":"audio/wav","model":"nova-3"}'
+
 curl -X POST http://localhost:8000/tts \
   -H "Content-Type: application/json" \
   -d '{"text":"Hello from Deepgram","voice_model":"aura-2-thalia-en"}'
