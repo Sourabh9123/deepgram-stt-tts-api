@@ -21,6 +21,7 @@ class AppSettings(BaseModel):
     audio_output_dir: Path = Path("generated_audio")
     request_timeout_seconds: float = Field(default=60.0, gt=0)
     log_level: str = "INFO"
+    cors_allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
 
     @field_validator("deepgram_base_url")
     @classmethod
@@ -56,6 +57,11 @@ def get_settings() -> AppSettings:
         "audio_output_dir": Path(_env_value("AUDIO_OUTPUT_DIR", "generated_audio") or "generated_audio"),
         "request_timeout_seconds": float(_env_value("REQUEST_TIMEOUT_SECONDS", "60") or "60"),
         "log_level": _env_value("LOG_LEVEL", "INFO"),
+        "cors_allowed_origins": [
+            origin.strip()
+            for origin in (_env_value("CORS_ALLOWED_ORIGINS", "http://localhost:5173") or "").split(",")
+            if origin.strip()
+        ],
     }
     try:
         settings = AppSettings(**raw_settings)

@@ -17,6 +17,7 @@ class TTSResult(BaseModel):
     """Normalized text-to-speech result returned by the application."""
 
     file_path: Path
+    audio_url: str | None = None
     voice_model: str
     bytes_written: int
     content_type: str

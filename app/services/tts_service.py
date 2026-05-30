@@ -48,6 +48,7 @@ class TextToSpeechService:
         )
         return TTSResult(
             file_path=output_path,
+            audio_url=f"/audio/{output_path.name}",
             voice_model=selected_model,
             bytes_written=len(audio),
             content_type=content_type,

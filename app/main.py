@@ -3,9 +3,13 @@
 import base64
 import binascii
 from contextlib import asynccontextmanager
+from os import getenv
 from typing import AsyncIterator
 
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, HTTPException, Query, Request, UploadFile, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.config.settings import AppSettings, get_settings
 from app.schemas.stt import Base64AudioRequest, STTResult
@@ -17,6 +21,7 @@ from app.utils.exceptions import AppError, DeepgramAPIError
 from app.utils.logging import configure_logging, get_logger, log_extra
 
 logger = get_logger(__name__)
+load_dotenv()
 
 
 @asynccontextmanager
@@ -42,6 +47,18 @@ app = FastAPI(
     version="1.0.0",
     description="Production-ready Deepgram STT and TTS integration.",
     lifespan=lifespan,
+)
+app.mount("/audio", StaticFiles(directory="generated_audio", check_dir=False), name="audio")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        origin.strip()
+        for origin in getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+        if origin.strip()
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
