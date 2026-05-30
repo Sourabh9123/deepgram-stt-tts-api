@@ -20,12 +20,12 @@ class SpeechToTextService:
         self._settings = settings
         self._client = client
 
-    async def transcribe_file(self, file_path: Path, model: str | None = None) -> STTResult:
+    async def transcribe_file(self, file_path: Path, model: str | None = None, language: str | None = None) -> STTResult:
         """Transcribe a local audio file and return a normalized result."""
         if not file_path.exists() or not file_path.is_file():
             raise FileNotFoundError(f"Audio file not found: {file_path}")
         logger.info("stt_file_received", extra=log_extra(file_path=str(file_path), bytes=file_path.stat().st_size))
-        payload = await self._client.post_audio_file("listen", file_path, self._stt_params(model))
+        payload = await self._client.post_audio_file("listen", file_path, self._stt_params(model, language))
         return self._to_result(payload, model or self._settings.default_stt_model)
 
     async def transcribe_bytes(
@@ -34,18 +34,20 @@ class SpeechToTextService:
         *,
         content_type: str,
         model: str | None = None,
+        language: str | None = None,
     ) -> STTResult:
         """Transcribe in-memory audio bytes and return a normalized result."""
         if not audio:
             raise ValueError("Audio payload is empty")
         logger.info("stt_bytes_received", extra=log_extra(bytes=len(audio), content_type=content_type))
-        payload = await self._client.post_audio_bytes("listen", audio, content_type, self._stt_params(model))
+        payload = await self._client.post_audio_bytes("listen", audio, content_type, self._stt_params(model, language))
         return self._to_result(payload, model or self._settings.default_stt_model)
 
-    def _stt_params(self, model: str | None) -> dict[str, Any]:
+    def _stt_params(self, model: str | None, language: str | None) -> dict[str, Any]:
         """Build Deepgram STT query parameters."""
         return {
             "model": model or self._settings.default_stt_model,
+            "language": language or self._settings.default_stt_language,
             "smart_format": "true",
         }
 

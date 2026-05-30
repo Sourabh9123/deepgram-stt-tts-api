@@ -13,6 +13,19 @@ cp .env.example .env
 
 Set `DEEPGRAM_API_KEY` in `.env`.
 
+Docs are protected with HTTP Basic Auth. Set `DOCS_USERNAME` and `DOCS_PASSWORD` in `.env`, then open `/docs`, `/redoc`, or `/openapi.json`.
+
+## Local Commands
+
+```bash
+make install
+make local
+make test
+make format
+make lint
+make build
+```
+
 ## Run FastAPI
 
 ```bash
@@ -24,6 +37,7 @@ uvicorn app.main:app --reload
 ```bash
 cd frontend
 npm install
+cp .env.example .env
 npm run dev
 ```
 
@@ -51,6 +65,10 @@ curl -X POST http://localhost:8000/stt \
 curl -X POST "http://localhost:8000/stt/binary?model=nova-3" \
   -H "Content-Type: audio/wav" \
   --data-binary @sample.wav
+
+curl -X POST "http://localhost:8000/stt/recording?model=nova-3" \
+  -H "Content-Type: audio/webm" \
+  --data-binary @recording.webm
 
 curl -X POST http://localhost:8000/stt/base64 \
   -H "Content-Type: application/json" \

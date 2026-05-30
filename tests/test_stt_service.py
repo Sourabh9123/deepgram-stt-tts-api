@@ -25,6 +25,7 @@ async def test_transcribe_bytes_returns_normalized_result(tmp_path: Path) -> Non
         """Return a fake Deepgram STT response."""
         assert request.headers["authorization"] == "Token test-key"
         assert request.url.params["model"] == "nova-3"
+        assert request.url.params["language"] == "hi"
         payload: dict[str, Any] = {
             "metadata": {"request_id": "abc", "duration": 1.2, "channels": 1},
             "results": {"channels": [{"alternatives": [{"transcript": "hello", "confidence": 0.98}]}]},
@@ -36,7 +37,7 @@ async def test_transcribe_bytes_returns_normalized_result(tmp_path: Path) -> Non
         test_settings = settings(tmp_path)
         client = DeepgramClient(test_settings, http_client)
         service = SpeechToTextService(test_settings, client)
-        result = await service.transcribe_bytes(b"audio", content_type="audio/wav")
+        result = await service.transcribe_bytes(b"audio", content_type="audio/wav", language="hi")
 
     assert result.transcript == "hello"
     assert result.confidence == 0.98

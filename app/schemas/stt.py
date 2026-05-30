@@ -29,3 +29,4 @@ class Base64AudioRequest(BaseModel):
     audio_base64: str = Field(min_length=1, description="Raw base64 audio or a data URL.")
     content_type: str = Field(default="application/octet-stream", description="Audio MIME type.")
     model: str | None = Field(default=None, description="Optional Deepgram Nova model id.")
+    language: str | None = Field(default=None, description="Optional BCP-47 language code.")
