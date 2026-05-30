@@ -1,0 +1,11 @@
+.env
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+generated_audio/
+uploads/
+.coverage
+htmlcov/
