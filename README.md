@@ -19,6 +19,16 @@ Set `DEEPGRAM_API_KEY` in `.env`.
 uvicorn app.main:app --reload
 ```
 
+## Run React Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`.
+
 ## Docker
 
 ```bash
